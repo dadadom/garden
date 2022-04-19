@@ -24,7 +24,7 @@ import { PluginContext } from "@garden-io/core/build/src/plugin-context"
 import { moduleFromConfig } from "@garden-io/core/build/src/types/module"
 import { DEFAULT_BUILD_TIMEOUT } from "@garden-io/core/build/src/plugins/container/helpers"
 import { containerHelpers as helpers } from "@garden-io/core/build/src/plugins/container/helpers"
-import { WrappedModuleActionHandler } from "@garden-io/core/build/src/types/plugin/plugin"
+import { WrappedModuleActionHandler } from "../../../core/build/src/plugin/plugin"
 import { ConfigureModuleParams, ConfigureModuleResult } from "@garden-io/core/build/src/types/plugin/module/configure"
 import { BuildModuleParams, BuildResult } from "@garden-io/core/build/src/types/plugin/module/build"
 
