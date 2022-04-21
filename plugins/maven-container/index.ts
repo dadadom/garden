@@ -23,7 +23,7 @@ import {
   ContainerTestSpec,
   ContainerModuleConfig,
   ContainerTaskSpec,
-} from "@garden-io/core/build/src/plugins/container/config"
+} from "../../core/build/src/plugins/container/moduleConfig"
 import {
   joiProviderName,
   joi,
@@ -33,7 +33,7 @@ import {
 import { RuntimeError, ConfigurationError } from "@garden-io/core/build/src/exceptions"
 import { containerHelpers } from "@garden-io/core/build/src/plugins/container/helpers"
 import { STATIC_DIR } from "@garden-io/core/build/src/constants"
-import { containerModuleSpecSchema } from "@garden-io/core/build/src/plugins/container/config"
+import { containerModuleSpecSchema } from "../../core/build/src/plugins/container/moduleConfig"
 import { providerConfigBaseSchema } from "@garden-io/core/build/src/config/provider"
 import { ConfigureModuleParams } from "@garden-io/core/build/src/types/plugin/module/configure"
 import { GetBuildStatusParams } from "@garden-io/core/build/src/types/plugin/module/getBuildStatus"

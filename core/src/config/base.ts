@@ -19,9 +19,10 @@ import { ProjectResource } from "../config/project"
 import { validateWithPath } from "./validation"
 import { listDirectory } from "../util/fs"
 import { isConfigFilename } from "../util/fs"
-import { TemplateKind, templateKind } from "./module-template"
+import { ModuleTemplateKind, moduleTemplateKind } from "./module-template"
 import { isTruthy } from "../util/util"
 import { PrimitiveMap } from "./common"
+import { actionKinds } from "../actions/base"
 
 export interface GardenResource {
   apiVersion: string
@@ -31,7 +32,7 @@ export interface GardenResource {
   configPath?: string
 }
 
-export type ConfigKind = "Module" | "Workflow" | "Project" | TemplateKind
+export type ConfigKind = "Module" | "Workflow" | "Project" | ModuleTemplateKind
 
 /**
  * Attempts to parse content as YAML, and applies a linter to produce more informative error messages when
@@ -114,7 +115,13 @@ function prepareResource({
   spec.path = dirname(configPath)
   spec.configPath = configPath
 
-  if (kind === "Project" || kind === "Command" || kind === "Workflow" || kind === templateKind) {
+  if (
+    kind === "Project" ||
+    kind === "Command" ||
+    kind === "Workflow" ||
+    kind === moduleTemplateKind ||
+    actionKinds.includes(kind)
+  ) {
     return spec
   } else if (kind === "Module") {
     return prepareModuleResource(spec, configPath, projectRoot)
