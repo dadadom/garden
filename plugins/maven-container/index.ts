@@ -38,7 +38,7 @@ import { providerConfigBaseSchema } from "@garden-io/core/build/src/config/provi
 import { ConfigureModuleParams } from "@garden-io/core/build/src/types/plugin/module/configure"
 import { GetBuildStatusParams } from "@garden-io/core/build/src/types/plugin/module/getBuildStatus"
 import { BuildModuleParams } from "@garden-io/core/build/src/types/plugin/module/build"
-import { containerModuleOutputsSchema } from "@garden-io/core/build/src/plugins/container/container"
+import { containerBuildOutputsSchema } from "@garden-io/core/build/src/plugins/container/container"
 
 const defaultDockerfileName = "maven-container.Dockerfile"
 const defaultDockerfilePath = resolve(STATIC_DIR, "maven-container", defaultDockerfileName)
@@ -131,7 +131,7 @@ export const gardenPlugin = () =>
       The provider will automatically fetch and cache Maven and the appropriate OpenJDK version ahead of building.
     `,
         schema: mavenContainerModuleSpecSchema(),
-        moduleOutputsSchema: containerModuleOutputsSchema(),
+        moduleOutputsSchema: containerBuildOutputsSchema(),
         handlers: {
           configure: configureMavenContainerModule,
           getBuildStatus,
