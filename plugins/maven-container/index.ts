@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { omit, get } from "lodash"
+import { omit, get, pick } from "lodash"
 import { copy, pathExists, readFile } from "fs-extra"
 import { resolve } from "path"
 import { xml2json } from "xml-js"
@@ -39,6 +39,7 @@ import { ConfigureModuleParams } from "@garden-io/core/build/src/types/plugin/mo
 import { GetBuildStatusParams } from "@garden-io/core/build/src/types/plugin/module/getBuildStatus"
 import { BuildModuleParams } from "@garden-io/core/build/src/types/plugin/module/build"
 import { containerBuildOutputsSchema } from "@garden-io/core/build/src/plugins/container/container"
+import { ConvertModuleParams, ConvertModuleResult } from "@garden-io/core/build/src/plugin/handlers/module/convert"
 
 const defaultDockerfileName = "maven-container.Dockerfile"
 const defaultDockerfilePath = resolve(STATIC_DIR, "maven-container", defaultDockerfileName)
@@ -60,7 +61,7 @@ export interface MavenContainerModule<
   W extends ContainerTaskSpec = ContainerTaskSpec
 > extends GardenModule<M, S, T, W> {}
 
-const mavenKeys = {
+const mavenBuildSchemaKeys = () => ({
   imageVersion: joi
     .string()
     .description(
@@ -87,9 +88,10 @@ const mavenKeys = {
       Use the default Dockerfile provided with this module. If set to \`false\` and no Dockerfile is found, Garden will fallback to using the \`image\` field.
       `
     ),
-}
+})
 
-const mavenContainerModuleSpecSchema = () => containerModuleSpecSchema().keys(mavenKeys)
+const mavenContainerModuleSpecSchema = () => containerModuleSpecSchema().keys(mavenBuildSchemaKeys())
+
 export const mavenContainerConfigSchema = () =>
   providerConfigBaseSchema().keys({
     name: joiProviderName("maven-container"),
@@ -108,32 +110,81 @@ export const gardenPlugin = () =>
     Adds the [maven-container module type](${moduleTypeUrl}), which is a specialized version of the \`container\` module type that has special semantics for building JAR files using Maven.
 
     To use it, simply add the provider to your provider configuration, and refer to the [maven-container module docs](${moduleTypeUrl}) for details on how to configure the modules.
-  `,
+    `,
 
     createModuleTypes: [
       {
         name: "maven-container",
         base: "container",
         docs: dedent`
-      **DEPRECATED**. Please use the [jib-container module type](./jib-container.md) instead.
+          **DEPRECATED**. Please use the [jib-container module type](./jib-container.md) instead.
 
-      A specialized version of the [container](./container.md) module type
-      that has special semantics for JAR files built with Maven.
+          A specialized version of the [container](./container.md) module type
+          that has special semantics for JAR files built with Maven.
 
-      Rather than build the JAR inside the container (or in a multi-stage build) this plugin runs \`mvn package\`
-      ahead of building the container, which tends to be much more performant, especially when building locally
-      with a warm artifact cache.
+          Rather than build the JAR inside the container (or in a multi-stage build) this plugin runs \`mvn package\`
+          ahead of building the container, which tends to be much more performant, especially when building locally
+          with a warm artifact cache.
 
-      A default Dockerfile is also provided for convenience, but you may override it by including one in the module
-      directory.
+          A default Dockerfile is also provided for convenience, but you may override it by including one in the module
+          directory.
 
-      To use it, make sure to add the \`maven-container\` provider to your project configuration.
-      The provider will automatically fetch and cache Maven and the appropriate OpenJDK version ahead of building.
-    `,
+          To use it, make sure to add the \`maven-container\` provider to your project configuration.
+          The provider will automatically fetch and cache Maven and the appropriate OpenJDK version ahead of building.
+        `,
         schema: mavenContainerModuleSpecSchema(),
         moduleOutputsSchema: containerBuildOutputsSchema(),
         handlers: {
           configure: configureMavenContainerModule,
+
+          async convert(params: ConvertModuleParams<MavenContainerModule>) {
+            const { base, module, dummyBuild, convertBuildDependency } = params
+            const output: ConvertModuleResult = await base!(params)
+
+            const actions = output.group!.actions
+            const buildActionIndex = actions.findIndex((a) => a.kind === "Build")
+
+            const buildAction = {
+              kind: "Build",
+              type: "maven-container",
+              name: module.name,
+              ...params.baseFields,
+
+              copyFrom: dummyBuild?.copyFrom,
+              allowPublish: module.allowPublish,
+              dependencies: module.build.dependencies.map(convertBuildDependency),
+
+              spec: {
+                // base container fields
+                buildArgs: module.spec.buildArgs,
+                extraFlags: module.spec.extraFlags,
+                publishId: module.spec.image,
+                targetStage: module.spec.build.targetImage,
+                timeout: module.spec.build.timeout,
+
+                // maven-container fields
+                dockerfile: module.spec.dockerfile, // See configure handler
+                ...pick(module.spec, Object.keys(mavenBuildSchemaKeys())),
+              },
+            }
+
+            // Replace existing Build if any, otherwise add and update deps on other actions
+            if (buildActionIndex >= 0) {
+              actions[buildActionIndex] = buildAction
+            } else {
+              actions.push(buildAction)
+
+              for (const action of actions) {
+                if (!action.dependencies) {
+                  action.dependencies = []
+                }
+                action.dependencies.push("build:" + buildAction.name)
+              }
+            }
+
+            return output
+          },
+
           getBuildStatus,
           build,
         },
@@ -147,7 +198,7 @@ export async function configureMavenContainerModule(params: ConfigureModuleParam
   const { base, moduleConfig } = params
 
   let containerConfig: ContainerModuleConfig = { ...moduleConfig, type: "container" }
-  containerConfig.spec = <ContainerModuleSpec>omit(moduleConfig.spec, Object.keys(mavenKeys))
+  containerConfig.spec = <ContainerModuleSpec>omit(moduleConfig.spec, Object.keys(mavenBuildSchemaKeys))
 
   const jdkVersion = moduleConfig.spec.jdkVersion!
 

@@ -45,7 +45,7 @@ describe("conftest-container provider", () => {
     expect(module.path).to.equal(containerModule.path)
     expect(module.spec).to.eql({
       build: { dependencies: [], timeout: 1200 },
-      files: ["Dockerfile"],
+      files: [defaultDockerfileName],
       namespace: "main",
       combine: false,
       policyPath: "dockerfile.rego",
@@ -89,7 +89,7 @@ describe("conftest-container provider", () => {
         serviceConfigs: [],
         taskConfigs: [],
         testConfigs: [],
-        spec: { dockerfile: "Dockerfile" },
+        spec: { dockerfile: defaultDockerfileName },
       },
     }
 
@@ -99,7 +99,7 @@ describe("conftest-container provider", () => {
     expect(module.path).to.equal(projectRoot)
     expect(module.spec).to.eql({
       build: { dependencies: [], timeout: 1200 },
-      files: ["Dockerfile"],
+      files: [defaultDockerfileName],
       namespace: "main",
       combine: false,
       policyPath: "dockerfile.rego",

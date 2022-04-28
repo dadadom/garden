@@ -118,10 +118,10 @@ describe("maven-container", () => {
     })
     it("should use user Dockerfile if provided", async () => {
       const config = cloneDeep(baseConfig)
-      config.spec.dockerfile = "Dockerfile"
+      config.spec.dockerfile = defaultDockerfileName
       const parsed = await configure({ ctx, moduleConfig: config, log, base: configureBase })
 
-      expect(parsed.moduleConfig.spec.dockerfile).to.eql("Dockerfile")
+      expect(parsed.moduleConfig.spec.dockerfile).to.eql(defaultDockerfileName)
     })
     context("useDefaultDockerfile is false", () => {
       it("should not use default Dockerfile", async () => {
@@ -129,12 +129,12 @@ describe("maven-container", () => {
         config.spec.useDefaultDockerfile = false
         const parsedA = await configure({ ctx, moduleConfig: config, log, base: configureBase })
 
-        config.spec.dockerfile = "Dockerfile"
+        config.spec.dockerfile = defaultDockerfileName
 
         const parsedB = await configure({ ctx, moduleConfig: config, log, base: configureBase })
 
         expect(parsedA.moduleConfig.spec.dockerfile).to.eql(undefined)
-        expect(parsedB.moduleConfig.spec.dockerfile).to.eql("Dockerfile")
+        expect(parsedB.moduleConfig.spec.dockerfile).to.eql(defaultDockerfileName)
       })
     })
   })
@@ -199,7 +199,7 @@ describe("maven-container", () => {
     it("should not copy the default Dockerfile to the build dir if user Docerkfile provided", async () => {
       td.replace(helpers, "hasDockerfile", () => true)
       const config = cloneDeep(baseConfig)
-      config.spec.dockerfile = "Dockerfile"
+      config.spec.dockerfile = defaultDockerfileName
       const module = td.object(await getTestModule(config))
       module.buildPath = tmpPath
       await prepareBuild(module, log)
