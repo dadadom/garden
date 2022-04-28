@@ -43,6 +43,8 @@ import { mutagenCliSpec } from "./mutagen"
 import { configMapModuleDefinition } from "./volumes/configmap"
 import { jibContainerHandlers } from "./jib-container"
 import { kustomizeSpec } from "./kubernetes-type/kustomize"
+import { k8sBuildContainer, k8sGetContainerBuildStatus } from "./container/build/build"
+import { containerDeploy, deleteContainerDeploy } from "./container/deployment"
 
 export async function configureProvider({
   namespace,
@@ -154,6 +156,7 @@ export const gardenPlugin = () =>
     configSchema: configSchema(),
     outputsSchema,
     commands: [cleanupClusterRegistry, clusterInit, uninstallGardenServices, pullImage],
+
     handlers: {
       configureProvider,
       getEnvironmentStatus,
@@ -164,6 +167,29 @@ export const gardenPlugin = () =>
       deleteSecret,
       getDebugInfo: debugInfo,
     },
+
+    extendActionTypes: {
+      build: [
+        {
+          name: "container",
+          handlers: {
+            build: k8sBuildContainer,
+            getStatus: k8sGetContainerBuildStatus,
+          },
+        },
+      ],
+      deploy: [
+        {
+          name: "container",
+          handlers: {
+            deploy: containerDeploy,
+            delete: deleteContainerDeploy,
+            getStatus: k8sGetContainerBuildStatus,
+          },
+        }
+      ]
+    },
+
     createModuleTypes: [
       {
         name: "helm",
