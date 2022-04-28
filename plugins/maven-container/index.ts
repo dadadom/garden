@@ -244,7 +244,7 @@ async function build(params: BuildModuleParams<MavenContainerModule>) {
   let { jarPath, jdkVersion, mvnOpts, useDefaultDockerfile, image } = module.spec
 
   // Fall back to using the image field
-  if (!useDefaultDockerfile && !containerHelpers.hasDockerfile(module, module.version)) {
+  if (!useDefaultDockerfile && !containerHelpers.moduleHasDockerfile(module, module.version)) {
     if (!image) {
       throw new ConfigurationError(
         dedent`
@@ -304,7 +304,7 @@ export async function prepareBuild(module: MavenContainerModule, log: LogEntry) 
   if (!module.spec.useDefaultDockerfile) {
     return
   }
-  if (module.spec.dockerfile === defaultDockerfileName || !containerHelpers.hasDockerfile(module, module.version)) {
+  if (module.spec.dockerfile === defaultDockerfileName || !containerHelpers.moduleHasDockerfile(module, module.version)) {
     log.debug(`Using default Dockerfile`)
     await copy(defaultDockerfilePath, resolve(module.buildPath, defaultDockerfileName))
   }
