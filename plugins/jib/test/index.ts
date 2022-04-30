@@ -79,7 +79,7 @@ describe("jib-container", function () {
         module.spec.build.projectType = "maven"
         module.spec.build.tarOnly = true
 
-        const res = await actions.build({
+        const res = await actions.build.build({
           module,
           log: garden.log,
           graph,
@@ -94,7 +94,7 @@ describe("jib-container", function () {
         module.spec.build.projectType = "gradle"
         module.spec.build.tarOnly = true
 
-        const res = await actions.build({
+        const res = await actions.build.build({
           module,
           log: garden.log,
           graph,
@@ -113,7 +113,7 @@ describe("jib-container", function () {
         module.spec.build.projectType = "maven"
         module.spec.build.tarOnly = false
 
-        await actions.build({
+        await actions.build.build({
           module,
           log: garden.log,
           graph,
@@ -124,7 +124,7 @@ describe("jib-container", function () {
         module.spec.build.projectType = "gradle"
         module.spec.build.tarOnly = false
 
-        await actions.build({
+        await actions.build.build({
           module,
           log: garden.log,
           graph,
@@ -138,7 +138,7 @@ describe("jib-container", function () {
         module.spec.build.tarOnly = false
         module.spec.build.dockerBuild = true
 
-        await actions.build({
+        await actions.build.build({
           module,
           log: garden.log,
           graph,
@@ -150,7 +150,7 @@ describe("jib-container", function () {
         module.spec.build.tarOnly = false
         module.spec.build.dockerBuild = true
 
-        await actions.build({
+        await actions.build.build({
           module,
           log: garden.log,
           graph,
