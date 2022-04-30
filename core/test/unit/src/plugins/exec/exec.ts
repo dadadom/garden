@@ -430,7 +430,7 @@ describe("exec plugin", () => {
     it("should run the test command in the module dir if local true", async () => {
       const module = graph.getModule("module-local")
       const actions = await garden.getActionRouter()
-      const res = await actions.testModule({
+      const res = await actions.test.run({
         log,
         module,
         interactive: true,
@@ -460,7 +460,7 @@ describe("exec plugin", () => {
     it("should receive module version as an env var", async () => {
       const module = graph.getModule("module-local")
       const actions = await garden.getActionRouter()
-      const res = await actions.testModule({
+      const res = await actions.test.run({
         log,
         module,
         interactive: true,
@@ -492,7 +492,7 @@ describe("exec plugin", () => {
     it("should run the task command in the module dir if local true", async () => {
       const actions = await garden.getActionRouter()
       const task = graph.getTask("pwd")
-      const res = await actions.runTask({
+      const res = await actions.run.run({
         log,
         task,
         interactive: true,
@@ -512,7 +512,7 @@ describe("exec plugin", () => {
 
       task.spec.command = ["echo", "$GARDEN_MODULE_VERSION"]
 
-      const res = await actions.runTask({
+      const res = await actions.run.run({
         log,
         task,
         interactive: true,
@@ -639,7 +639,7 @@ describe("exec plugin", () => {
       it("runs the service's deploy command with the specified env vars", async () => {
         const service = graph.getService("echo")
         const actions = await garden.getActionRouter()
-        const res = await actions.deployService({
+        const res = await actions.deploy.deploy({
           devMode: false,
           force: false,
 
@@ -658,7 +658,7 @@ describe("exec plugin", () => {
       it("skips deploying if deploy command is empty but does not throw", async () => {
         const service = graph.getService("empty")
         const actions = await garden.getActionRouter()
-        const res = await actions.deployService({
+        const res = await actions.deploy.deploy({
           devMode: false,
           force: false,
 
@@ -679,7 +679,7 @@ describe("exec plugin", () => {
         const actions = await garden.getActionRouter()
         await expectError(
           async () =>
-            await actions.deployService({
+            await actions.deploy.deploy({
               devMode: false,
               force: false,
 
@@ -728,7 +728,7 @@ describe("exec plugin", () => {
         it("should run a persistent local service in dev mode", async () => {
           const service = graph.getService("dev-mode")
           const actions = await garden.getActionRouter()
-          const res = await actions.deployService({
+          const res = await actions.deploy.deploy({
             devMode: true,
             force: false,
 
@@ -750,7 +750,7 @@ describe("exec plugin", () => {
           // This services just echos a string N times before exiting.
           const service = graph.getService("dev-mode-with-logs")
           const actions = await garden.getActionRouter()
-          const res = await actions.deployService({
+          const res = await actions.deploy.deploy({
             devMode: true,
             force: false,
 
@@ -818,7 +818,7 @@ describe("exec plugin", () => {
           // This services just echos a string N times before exiting.
           const service = graph.getService("dev-mode-with-empty-log-lines")
           const actions = await garden.getActionRouter()
-          const res = await actions.deployService({
+          const res = await actions.deploy.deploy({
             devMode: true,
             force: false,
 
@@ -890,7 +890,7 @@ describe("exec plugin", () => {
           const actions = await garden.getActionRouter()
           let error: any
           try {
-            await actions.deployService({
+            await actions.deploy.deploy({
               devMode: true,
               force: false,
 
@@ -940,7 +940,7 @@ describe("exec plugin", () => {
       it("returns 'ready' if statusCommand returns zero exit code", async () => {
         const service = graph.getService("touch")
         const actions = await garden.getActionRouter()
-        await actions.deployService({
+        await actions.deploy.deploy({
           devMode: false,
 
           localMode: false,
@@ -994,7 +994,7 @@ describe("exec plugin", () => {
       it("runs the cleanup command if set", async () => {
         const service = graph.getService("touch")
         const actions = await garden.getActionRouter()
-        await actions.deployService({
+        await actions.deploy.deploy({
           devMode: false,
 
           localMode: false,
@@ -1007,7 +1007,7 @@ describe("exec plugin", () => {
             dependencies: [],
           },
         })
-        const res = await actions.deleteService({
+        const res = await actions.deploy.delete({
           log,
           service,
           graph,
@@ -1023,7 +1023,7 @@ describe("exec plugin", () => {
       it("returns 'unknown' state if no cleanupCommand is set", async () => {
         const service = graph.getService("echo")
         const actions = await garden.getActionRouter()
-        const res = await actions.deleteService({
+        const res = await actions.deploy.delete({
           log,
           service,
           graph,
@@ -1040,7 +1040,7 @@ describe("exec plugin", () => {
         const actions = await garden.getActionRouter()
         await expectError(
           async () =>
-            await actions.deleteService({
+            await actions.deploy.delete({
               log,
               service,
               graph,
