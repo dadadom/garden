@@ -339,9 +339,9 @@ describe("kubernetes-module handlers", () => {
         service: graph.getService("namespace-resource"),
         force: true,
         forceBuild: false,
-        devModeServiceNames: [],
+        devModeDeployNames: [],
 
-        localModeServiceNames: [],
+        localModeDeployNames: [],
       })
       const results = await garden.processTasks([deployTask], { throwOnError: true })
       const status = getServiceStatuses(results)["namespace-resource"]
@@ -378,9 +378,9 @@ describe("kubernetes-module handlers", () => {
         service: graph.getService("namespace-resource"),
         force: true,
         forceBuild: true,
-        devModeServiceNames: [],
+        devModeDeployNames: [],
 
-        localModeServiceNames: [],
+        localModeDeployNames: [],
       })
       await garden.processTasks([deployTask2], { throwOnError: true })
       ns2Resource = await getDeployedResource(ctx, ctx.provider, ns2Manifest!, log)

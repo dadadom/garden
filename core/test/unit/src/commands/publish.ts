@@ -75,7 +75,7 @@ describe("PublishCommand", () => {
       headerLog: log,
       footerLog: log,
       args: {
-        modules: undefined,
+        names: undefined,
       },
       opts: withDefaultGlobalOpts({
         "allow-dirty": false,
@@ -147,7 +147,7 @@ describe("PublishCommand", () => {
       headerLog: log,
       footerLog: log,
       args: {
-        modules: undefined,
+        names: undefined,
       },
       opts: withDefaultGlobalOpts({
         "allow-dirty": false,
@@ -175,7 +175,7 @@ describe("PublishCommand", () => {
       headerLog: log,
       footerLog: log,
       args: {
-        modules: undefined,
+        names: undefined,
       },
       opts: withDefaultGlobalOpts({
         "allow-dirty": false,
@@ -202,7 +202,7 @@ describe("PublishCommand", () => {
       headerLog: log,
       footerLog: log,
       args: {
-        modules: undefined,
+        names: undefined,
       },
       opts: withDefaultGlobalOpts({
         "allow-dirty": false,
@@ -232,7 +232,7 @@ describe("PublishCommand", () => {
       headerLog: log,
       footerLog: log,
       args: {
-        modules: ["module-a"],
+        names: ["module-a"],
       },
       opts: withDefaultGlobalOpts({
         "allow-dirty": false,
@@ -258,7 +258,7 @@ describe("PublishCommand", () => {
       headerLog: log,
       footerLog: log,
       args: {
-        modules: ["module-c"],
+        names: ["module-c"],
       },
       opts: withDefaultGlobalOpts({
         "allow-dirty": false,
@@ -282,7 +282,7 @@ describe("PublishCommand", () => {
       headerLog: log,
       footerLog: log,
       args: {
-        modules: ["module-a"],
+        names: ["module-a"],
       },
       opts: withDefaultGlobalOpts({
         "allow-dirty": false,

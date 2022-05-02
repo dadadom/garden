@@ -132,15 +132,15 @@ describe("GetServiceStatusTask", () => {
         service: testService,
         force: true,
         log: garden.log,
-        devModeServiceNames: [],
+        devModeDeployNames: [],
 
-        localModeServiceNames: [],
+        localModeDeployNames: [],
       })
 
       const key = statusTask.getKey()
       const { [key]: result } = await garden.processTasks([statusTask], { throwOnError: true })
 
-      expect(result!.output.outputs).to.eql({ log: "test output" })
+      expect(result!.result.outputs).to.eql({ log: "test output" })
     })
 
     it("should set status to unknown if runtime variables can't be resolved", async () => {
@@ -213,15 +213,15 @@ describe("GetServiceStatusTask", () => {
         service: testService,
         force: true,
         log: garden.log,
-        devModeServiceNames: [],
+        devModeDeployNames: [],
 
-        localModeServiceNames: [],
+        localModeDeployNames: [],
       })
 
       const key = statusTask.getKey()
       const { [key]: result } = await garden.processTasks([statusTask], { throwOnError: true })
 
-      expect(result!.output.state).to.equal("unknown")
+      expect(result!.result.state).to.equal("unknown")
     })
   })
 })

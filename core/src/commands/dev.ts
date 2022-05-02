@@ -146,15 +146,15 @@ export class DevCommand extends Command<DevCommandArgs, DevCommandOpts> {
       return {}
     }
 
-    const localModeServiceNames = getMatchingServiceNames(opts["local-mode"], graph)
+    const localModeDeployNames = getMatchingServiceNames(opts["local-mode"], graph)
 
     const services = graph.getServices({ names: args.services })
 
-    const devModeServiceNames = services
+    const devModeDeployNames = services
       .map((s) => s.name)
       // Since dev mode is implicit when using this command, we consider explicitly enabling local mode to
       // take precedence over dev mode.
-      .filter((name) => !localModeServiceNames.includes(name))
+      .filter((name) => !localModeDeployNames.includes(name))
 
     const initialTasks = await getDevCommandInitialTasks({
       garden,
@@ -162,8 +162,8 @@ export class DevCommand extends Command<DevCommandArgs, DevCommandOpts> {
       graph,
       modules,
       services,
-      devModeServiceNames,
-      localModeServiceNames,
+      localModeDeployNames,
+      devModeDeployNames,
       skipTests,
       forceDeploy: opts.force,
     })
@@ -176,16 +176,16 @@ export class DevCommand extends Command<DevCommandArgs, DevCommandOpts> {
       modules,
       watch: true,
       initialTasks,
-      skipWatch: getDevModeModules(devModeServiceNames, graph),
+      skipWatch: getDevModeModules(devModeDeployNames, graph),
       changeHandler: async (updatedGraph: ConfigGraph, module: GardenModule) => {
         return getDevCommandWatchTasks({
           garden,
           log,
           updatedGraph,
           module,
-          servicesWatched: devModeServiceNames,
-          devModeServiceNames,
-          localModeServiceNames,
+          servicesWatched: devModeDeployNames,
+          devModeDeployNames,
+          localModeDeployNames,
           testNames: opts["test-names"],
           skipTests,
         })
@@ -202,8 +202,8 @@ export async function getDevCommandInitialTasks({
   graph,
   modules,
   services,
-  devModeServiceNames,
-  localModeServiceNames,
+  devModeDeployNames,
+  localModeDeployNames,
   skipTests,
   forceDeploy,
 }: {
@@ -212,8 +212,8 @@ export async function getDevCommandInitialTasks({
   graph: ConfigGraph
   modules: GardenModule[]
   services: GardenService[]
-  devModeServiceNames: string[]
-  localModeServiceNames: string[]
+  devModeDeployNames: string[]
+  localModeDeployNames: string[]
   skipTests: boolean
   forceDeploy: boolean
 }) {
@@ -236,8 +236,8 @@ export async function getDevCommandInitialTasks({
             graph,
             log,
             module,
-            devModeServiceNames,
-            localModeServiceNames,
+            devModeDeployNames,
+            localModeDeployNames,
             force: forceDeploy,
             forceBuild: false,
           })
@@ -258,8 +258,8 @@ export async function getDevCommandInitialTasks({
           force: false,
           forceBuild: false,
           fromWatch: false,
-          devModeServiceNames,
-          localModeServiceNames,
+          devModeDeployNames,
+          localModeDeployNames,
         })
     )
 
@@ -272,8 +272,8 @@ export async function getDevCommandWatchTasks({
   updatedGraph,
   module,
   servicesWatched,
-  devModeServiceNames,
-  localModeServiceNames,
+  devModeDeployNames,
+  localModeDeployNames,
   testNames,
   skipTests,
 }: {
@@ -282,8 +282,8 @@ export async function getDevCommandWatchTasks({
   updatedGraph: ConfigGraph
   module: GardenModule
   servicesWatched: string[]
-  devModeServiceNames: string[]
-  localModeServiceNames: string[]
+  devModeDeployNames: string[]
+  localModeDeployNames: string[]
   testNames: string[] | undefined
   skipTests: boolean
 }) {
@@ -293,8 +293,8 @@ export async function getDevCommandWatchTasks({
     graph: updatedGraph,
     module,
     servicesWatched,
-    devModeServiceNames,
-    localModeServiceNames,
+    devModeDeployNames,
+    localModeDeployNames,
   })
 
   if (!skipTests) {
@@ -309,8 +309,8 @@ export async function getDevCommandWatchTasks({
             graph: updatedGraph,
             filterNames: testNames,
             fromWatch: true,
-            devModeServiceNames,
-            localModeServiceNames,
+            devModeDeployNames,
+            localModeDeployNames,
           })
         )
       )

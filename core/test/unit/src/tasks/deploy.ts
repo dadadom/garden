@@ -156,9 +156,9 @@ describe("DeployTask", () => {
         forceBuild: false,
         fromWatch: false,
         log: garden.log,
-        devModeServiceNames: [],
+        devModeDeployNames: [],
 
-        localModeServiceNames: [],
+        localModeDeployNames: [],
       })
 
       expect((await forcedDeployTask.resolveDependencies()).find((dep) => dep.type === "task")!.force).to.be.false
@@ -171,9 +171,9 @@ describe("DeployTask", () => {
         forceBuild: false,
         fromWatch: false,
         log: garden.log,
-        devModeServiceNames: [],
+        devModeDeployNames: [],
 
-        localModeServiceNames: [],
+        localModeDeployNames: [],
       })
 
       expect((await unforcedDeployTask.resolveDependencies()).find((dep) => dep.type === "task")!.force).to.be.false
@@ -186,9 +186,9 @@ describe("DeployTask", () => {
         forceBuild: false,
         fromWatch: true,
         log: garden.log,
-        devModeServiceNames: [],
+        devModeDeployNames: [],
 
-        localModeServiceNames: [],
+        localModeDeployNames: [],
       })
 
       expect((await deployTaskFromWatch.resolveDependencies()).find((dep) => dep.type === "task")!.force).to.be.false
@@ -207,9 +207,9 @@ describe("DeployTask", () => {
           fromWatch: false,
           log: garden.log,
           skipRuntimeDependencies: true, // <-----
-          devModeServiceNames: [],
+          devModeDeployNames: [],
 
-          localModeServiceNames: [],
+          localModeDeployNames: [],
         })
 
         const deps = await deployTask.resolveDependencies()
@@ -229,14 +229,14 @@ describe("DeployTask", () => {
         force: true,
         forceBuild: false,
         log: garden.log,
-        devModeServiceNames: [],
+        devModeDeployNames: [],
 
-        localModeServiceNames: [],
+        localModeDeployNames: [],
       })
 
       const result = await garden.processTasks([deployTask], { throwOnError: true })
 
-      expect(result[deployTask.getKey()]!.output.outputs).to.eql({ log: "test output" })
+      expect(result[deployTask.getKey()]!.result.outputs).to.eql({ log: "test output" })
     })
   })
 })
