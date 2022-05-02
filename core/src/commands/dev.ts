@@ -15,9 +15,9 @@ import { join } from "path"
 import { getModuleWatchTasks } from "../tasks/helpers"
 import { Command, CommandParams, CommandResult, handleProcessResults, PrepareParams } from "./base"
 import { STATIC_DIR } from "../constants"
-import { processModules } from "../process"
+import { processActions } from "../process"
 import { GardenModule } from "../types/module"
-import { getTestTasks } from "../tasks/test"
+import { getTestTasksFromModule } from "../tasks/test"
 import { ConfigGraph } from "../graph/config-graph"
 import { getDevModeModules, getMatchingServiceNames } from "./helpers"
 import { startServer } from "../server/server"
@@ -168,7 +168,7 @@ export class DevCommand extends Command<DevCommandArgs, DevCommandOpts> {
       forceDeploy: opts.force,
     })
 
-    const results = await processModules({
+    const results = await processActions({
       garden,
       graph,
       log,
@@ -176,7 +176,7 @@ export class DevCommand extends Command<DevCommandArgs, DevCommandOpts> {
       modules,
       watch: true,
       initialTasks,
-      skipWatchModules: getDevModeModules(devModeServiceNames, graph),
+      skipWatch: getDevModeModules(devModeServiceNames, graph),
       changeHandler: async (updatedGraph: ConfigGraph, module: GardenModule) => {
         return getDevCommandWatchTasks({
           garden,
@@ -231,7 +231,7 @@ export async function getDevCommandInitialTasks({
       // Run all tests in module
       const testTasks = skipTests
         ? []
-        : await getTestTasks({
+        : await getTestTasksFromModule({
             garden,
             graph,
             log,
@@ -302,7 +302,7 @@ export async function getDevCommandWatchTasks({
     tasks.push(
       ...flatten(
         await Bluebird.map(testModules, (m) =>
-          getTestTasks({
+          getTestTasksFromModule({
             garden,
             log,
             module: m,

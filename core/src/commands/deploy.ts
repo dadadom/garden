@@ -20,7 +20,7 @@ import {
   ProcessCommandResult,
 } from "./base"
 import { getModuleWatchTasks } from "../tasks/helpers"
-import { processModules } from "../process"
+import { processActions } from "../process"
 import { printHeader } from "../logger/util"
 import { BaseTask } from "../tasks/base"
 import { getDevModeModules, getMatchingServiceNames } from "./helpers"
@@ -212,14 +212,14 @@ export class DeployCommand extends Command<Args, Opts> {
         })
     )
 
-    const results = await processModules({
+    const results = await processActions({
       garden,
       graph: initGraph,
       log,
       footerLog,
       modules,
       initialTasks,
-      skipWatchModules: getDevModeModules(devModeServiceNames, initGraph),
+      skipWatch: getDevModeModules(devModeServiceNames, initGraph),
       watch,
       changeHandler: async (graph, module) => {
         const tasks: BaseTask[] = await getModuleWatchTasks({
