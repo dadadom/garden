@@ -68,6 +68,7 @@ describe("resolveProjectConfig", () => {
       })
     ).to.eql({
       ...config,
+      dotIgnoreFiles: [],
       environments: [
         {
           name: "default",
@@ -109,6 +110,7 @@ describe("resolveProjectConfig", () => {
       })
     ).to.eql({
       ...config,
+      dotIgnoreFiles: [],
       sources: [],
       environments: defaultEnvironments,
       varfile: defaultVarfilePath,
@@ -167,6 +169,7 @@ describe("resolveProjectConfig", () => {
       })
     ).to.eql({
       ...config,
+      dotIgnoreFiles: [],
       environments: [
         {
           name: "default",
@@ -245,6 +248,7 @@ describe("resolveProjectConfig", () => {
       })
     ).to.eql({
       ...config,
+      dotIgnoreFiles: [],
       environments: [
         {
           name: "default",
@@ -357,6 +361,7 @@ describe("resolveProjectConfig", () => {
       })
     ).to.eql({
       ...config,
+      dotIgnoreFiles: [],
       environments: [
         {
           name: "default",
@@ -407,6 +412,7 @@ describe("resolveProjectConfig", () => {
       })
     ).to.eql({
       ...config,
+      dotIgnoreFiles: [],
       defaultEnvironment: "local",
       environments: defaultEnvironments,
       sources: [],
@@ -443,6 +449,7 @@ describe("resolveProjectConfig", () => {
       })
     ).to.eql({
       ...config,
+      dotIgnoreFiles: [],
       defaultEnvironment: "local",
       environments: defaultEnvironments,
       sources: [],
@@ -498,6 +505,7 @@ describe("resolveProjectConfig", () => {
       })
     ).to.eql({
       ...config,
+      dotIgnoreFiles: [],
       environments: [
         {
           name: "default",
@@ -576,6 +584,7 @@ describe("resolveProjectConfig", () => {
       })
     ).to.eql({
       ...config,
+      dotIgnoreFiles: [],
       environments: [
         {
           name: "default",
