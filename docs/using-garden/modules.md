@@ -45,7 +45,7 @@ A Garden project is usually split up into the project-level configuration file,
 You can also choose any `*.garden.yml` filename for each module configuration file. For example, you might prefer to set the module name in the filename, e.g. `my-module.garden.yml` to make it easier to find in a large project.
 
 {% hint style="info" %}
-It's also possible to [define several modules in the same `garden.yml` file](#multiple-modules-in-the-same-directory) and/or in the same file as the the project-level configuration. If you only have a couple of modules, you might for example define them together in a single `modules.garden.yml` file. See [below](#multiple-modules-in-the-same-directory) for more details.
+It's also possible to [define several modules in the same `garden.yml` file](#multiple-modules-in-the-same-directory) and/or in the same file as the project-level configuration. If you only have a couple of modules, you might for example define them together in a single `modules.garden.yml` file. See [below](#multiple-modules-in-the-same-directory) for more details.
 {% endhint %}
 
 Modules must have a type. Different [module _types_](#module-types) behave in different ways. For example, the `container` module type corresponds to a Docker image, either built from a local Dockerfile or pulled from a remote repository.
@@ -151,7 +151,7 @@ You can learn more about different module types in the [module type reference do
 
 ### Container Module
 
-Below is the configuration for a simple container module. Here we're assuming that the the Dockerfile and source files are in the same directory as the `garden.yml` file.
+Below is the configuration for a simple container module. Here we're assuming that the Dockerfile and source files are in the same directory as the `garden.yml` file.
 
 ```yaml
 kind: Module
